@@ -70,7 +70,7 @@ public class StripeWebhookController {
                 handlePaymentLinkUpdated(event);
                 break;
 //            case "payment_intent.succeeded":
-            case "checkout.session.completed":
+                case "checkout.session.completed":
                 handlePaymentReceived(event);
                 break;
             default:

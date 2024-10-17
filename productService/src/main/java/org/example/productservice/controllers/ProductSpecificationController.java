@@ -4,6 +4,7 @@ package org.example.productservice.controllers;
 import org.example.productservice.dtos.ProductSpecificationDto;
 import org.example.productservice.exceptions.NotFoundException;
 import org.example.productservice.models.ProductSpecification;
+import org.example.productservice.services.IProductSpecificationService;
 import org.example.productservice.services.ProductSpecificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,7 @@ import java.util.List;
 @RequestMapping("/specifications")
 public class ProductSpecificationController {
     @Autowired
-    private ProductSpecificationService specificationService;
+    private IProductSpecificationService specificationService;
 
     @PostMapping
     public ResponseEntity<ProductSpecificationDto> createSpecification(@RequestBody ProductSpecificationDto specificationDto) throws NotFoundException {

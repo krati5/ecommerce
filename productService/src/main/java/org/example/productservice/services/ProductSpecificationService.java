@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class ProductSpecificationService {
+public class ProductSpecificationService implements IProductSpecificationService {
     @Autowired
     private ProductSpecificationRepository specificationRepository;
 
@@ -22,6 +22,7 @@ public class ProductSpecificationService {
     private ProductRepository productRepository;
 
     // Get all specifications
+    @Override
     public List<ProductSpecificationDto> getAllSpecifications() {
         return specificationRepository.findAll()
                 .stream()
@@ -30,6 +31,7 @@ public class ProductSpecificationService {
     }
 
     // Search specifications by attribute name and value
+    @Override
     public List<ProductSpecificationDto> searchSpecificationsByAttributeNameAndValue(String attributeName, String attributeValue) throws NotFoundException {
         List<ProductSpecification> specifications = specificationRepository.findByAttributeNameAndAttributeValue(attributeName, attributeValue);
         if (specifications.isEmpty()) {
@@ -39,6 +41,7 @@ public class ProductSpecificationService {
                 .map(ProductSpecificationDto::fromProductSpecification)
                 .collect(Collectors.toList());
     }
+    @Override
     public ProductSpecificationDto createSpecification(ProductSpecificationDto specificationDto) throws NotFoundException {
         Product product = productRepository.findById(specificationDto.getProductId())
                 .orElseThrow(() -> new NotFoundException("Product not found with id " + specificationDto.getProductId()));
@@ -48,6 +51,7 @@ public class ProductSpecificationService {
         return ProductSpecificationDto.fromProductSpecification(savedSpec);
     }
 
+    @Override
     public ProductSpecificationDto updateSpecification(Long id, ProductSpecificationDto updatedSpecDto) throws NotFoundException {
         ProductSpecification existingSpec = specificationRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Specification not found with id " + id));
@@ -59,6 +63,7 @@ public class ProductSpecificationService {
         return ProductSpecificationDto.fromProductSpecification(updatedSpec);
     }
 
+    @Override
     public void deleteSpecification(Long id) throws NotFoundException {
         if (!specificationRepository.existsById(id)) {
             throw new NotFoundException("Specification not found with id " + id);
@@ -66,12 +71,14 @@ public class ProductSpecificationService {
         specificationRepository.deleteById(id);
     }
 
+    @Override
     public ProductSpecificationDto getSpecificationById(Long id) throws NotFoundException {
         ProductSpecification specification = specificationRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Specification not found with id " + id));
         return ProductSpecificationDto.fromProductSpecification(specification);
     }
 
+    @Override
     public List<ProductSpecificationDto> getSpecificationsByProductId(Long productId) {
         List<ProductSpecification> specifications = specificationRepository.findByProductId(productId);
         return specifications.stream()

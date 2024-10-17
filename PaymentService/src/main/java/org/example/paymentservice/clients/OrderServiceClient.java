@@ -41,9 +41,21 @@ public class OrderServiceClient implements IOrderServiceClient {
     }
 
     @Override
-    public Order updateOrderWithPaymentId(Long orderId, Long paymentId){
+    public Order updateOrderWithPaymentId(Long orderId, Long paymentId, String token){
         String url = orderServiceUrl + "/" + orderId.toString() + "/payment/" + paymentId;
-        return restTemplate.getForObject(url, Order.class);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<OrderStatusDTO> requestEntity = new HttpEntity<>(headers);
+
+        ResponseEntity<Order> responseEntity = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, Order.class);
+
+        if (responseEntity.getStatusCode() == HttpStatus.OK) {
+            return responseEntity.getBody();
+        } else {
+            throw new RuntimeException("Failed to get order details: " + responseEntity.getStatusCode());
+        }
     }
 
     @Override
