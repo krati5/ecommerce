@@ -27,7 +27,7 @@ import java.util.Optional;
 
 @AllArgsConstructor
 @Service
-public class OrderService {
+public class OrderService implements IOrderService {
 
     private OrderRepository orderRepository;
 
@@ -36,21 +36,7 @@ public class OrderService {
     private final ProductServiceClient productServiceClient;
     private final CartServiceClient cartServiceClient;
 
-    private void validateCart(CartDTO cart, Long userId) throws NotFoundException {
-
-
-        // Validate that the cart belongs to the authenticated user
-        if (!cart.getUserId().equals(userId)) {
-            throw new AuthenticationException("You are not authorized to checkout this cart.");
-        }
-
-        // Validate that the cart has product items
-        if (cart.getCartItems().isEmpty()) {
-            throw new NotFoundException("No items found in the cart with id "+cart.getId());
-        }
-
-    }
-
+    @Override
     public Order processCheckout(Authentication authentication) throws NotFoundException, InsufficientQuantity {
         Long userId = JwtUtils.extractUserIdClaim(authentication);
         String token = JwtUtils.extractTokenValue(authentication);
@@ -97,6 +83,7 @@ public class OrderService {
 
     }
 
+    @Override
     public Order createOrder(Order order) throws InsufficientQuantity {
         Double totalAmount = (double) 0;
         // Check product stock
@@ -129,6 +116,7 @@ public class OrderService {
         return savedOrder;
     }
 
+    @Override
     public Order addAddressToOrder(Long orderId, Long addressId) throws NotFoundException {
         Order order = getOrderById(orderId)
                 .orElseThrow(() -> new NotFoundException("Order not found with id "+orderId));
@@ -139,10 +127,12 @@ public class OrderService {
 
     }
 
+    @Override
     public Optional<Order> getOrderById(Long id) {
         return orderRepository.findById(id);
     }
 
+    @Override
     public Order updateOrderStatus(Long id, OrderStatus status) throws NotFoundException {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Order not found with id: " + id));
@@ -150,6 +140,7 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
+    @Override
     public boolean deleteOrder(Long id) {
         if (orderRepository.existsById(id)) {
             orderRepository.deleteById(id);
@@ -158,14 +149,17 @@ public class OrderService {
         return false;
     }
 
+    @Override
     public List<Order> listOrders() {
         return orderRepository.findAll();
     }
 
+    @Override
     public List<Order> getOrdersByCustomerId(Long customerId) {
         return orderRepository.findAllByCustomerId(customerId);
     }
 
+    @Override
     public Order updateOrderWithPaymentId(Long orderId, Long paymentId) throws NotFoundException {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new NotFoundException("Order not found with id: " + orderId));
@@ -173,6 +167,7 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
+    @Override
     public Order processOrderConfirmation(Long orderId) throws NotFoundException {
         Optional<Order> orderOptional = getOrderById(orderId);
         if(orderOptional.isEmpty()){

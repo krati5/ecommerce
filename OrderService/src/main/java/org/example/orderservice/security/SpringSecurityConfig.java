@@ -22,6 +22,7 @@ public class SpringSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/webhooks/stripe/").permitAll()
+                        .requestMatchers("/orders/confirmation").permitAll()
                         .anyRequest().authenticated()
 
                 )

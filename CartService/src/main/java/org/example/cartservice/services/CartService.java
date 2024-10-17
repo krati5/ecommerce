@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
-public class CartService {
+public class CartService implements ICartService {
 
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
@@ -23,10 +23,12 @@ public class CartService {
         this.cartItemRepository = cartItemRepository;
     }
 
+    @Override
     public Optional<Cart> getCartByUserId(Long userId) {
         return cartRepository.findByUserIdAndIsDeletedFalse(userId);
 
     }
+    @Override
     @Transactional
     public Cart addToCart(Long userId, Long productId, Integer quantity) {
         // Find the cart by userId
@@ -65,6 +67,7 @@ public class CartService {
         return cartRepository.save(cart);
     }
 
+    @Override
     public boolean softDeleteCart(Long userId) {
         Optional<Cart> cartOptional = getCartByUserId(userId);
         if (cartOptional.isPresent()) {

@@ -102,7 +102,7 @@ public class OrderController {
         return "Your order confirmation with id "+ orderId.toString()+" is in process.";
     }
 
-    @GetMapping("/{orderId}/payment/{paymentId}")
+    @PutMapping("/{orderId}/payment/{paymentId}")
     public ResponseEntity<OrderDTO> updateOrderWithPaymentId(@PathVariable("orderId") Long orderId, @PathVariable("paymentId") Long paymentId) throws NotFoundException {
         Order updatedOrder = orderService.updateOrderWithPaymentId(orderId, paymentId);
         return new ResponseEntity<>(OrderDTO.toOrderDTO(updatedOrder), HttpStatus.OK);

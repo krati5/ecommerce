@@ -3,6 +3,7 @@ package org.example.productservice.controllers;
 
 import org.example.productservice.dtos.ProductReviewDto;
 import org.example.productservice.exceptions.NotFoundException;
+import org.example.productservice.services.IProductReviewService;
 import org.example.productservice.services.ProductReviewService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +14,9 @@ import java.util.List;
 @RequestMapping("/reviews")
 public class ProductReviewController {
 
-    private final ProductReviewService reviewService;
+    private final IProductReviewService reviewService;
 
-    public ProductReviewController(ProductReviewService reviewService) {
+    public ProductReviewController(IProductReviewService reviewService) {
         this.reviewService = reviewService;
     }
 
